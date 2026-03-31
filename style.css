@@ -1,0 +1,805 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #FFD6E8;
+  display: flex;
+  justify-content: center;
+  padding: 36px 20px 40px;
+  min-height: 100vh;
+}
+
+/* ══════════════════════════════
+   SAVINGS INPUT PAGE (savings.html)
+══════════════════════════════ */
+
+body.savings-bg {
+  background: #F0C8E0;
+  padding: 24px 20px 48px;
+  align-items: flex-start;
+}
+
+.savings-wrap {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Main input table */
+.input-table {
+  background: #E8B8D8;
+  border-radius: 18px 18px 0 0;
+  overflow: hidden;
+}
+
+/* Year & % rows */
+.table-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1.5px solid rgba(255,255,255,0.4);
+}
+
+.top-row { padding: 10px 0 4px; }
+.rate-row { padding: 4px 0 10px; }
+
+.row-label {
+  width: 120px;
+  flex-shrink: 0;
+  padding: 6px 16px;
+  font-size: 22px;
+  color: #5a2d4a;
+}
+
+.cursive-label {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+}
+
+.pct-label {
+  font-size: 20px;
+  font-style: normal;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 600;
+}
+
+.row-value {
+  flex: 1;
+  padding: 4px 12px 4px 0;
+}
+
+.table-input {
+  width: 100%;
+  background: rgba(255,255,255,0.55);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 15px;
+  color: #4a1a3a;
+  outline: none;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.table-input:focus {
+  background: rgba(255,255,255,0.8);
+}
+
+/* Month rows block */
+.months-block {
+  background: #E0AACE;
+}
+
+.months-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.month-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1.5px solid rgba(255,255,255,0.35);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.month-row:active {
+  background: rgba(255,255,255,0.15);
+}
+
+.last-month {
+  border-bottom: none;
+}
+
+.month-label {
+  width: 120px;
+  flex-shrink: 0;
+  padding: 14px 16px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #4a1a3a;
+  font-family: 'Playfair Display', Georgia, serif;
+  background: #D4A0C4;
+  display: flex;
+  align-items: center;
+}
+
+.month-value {
+  flex: 1;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #4a1a3a;
+  background: #EAC0DA;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 50px;
+}
+
+/* Total section */
+.total-section {
+  background: #E8B8D8;
+  border-radius: 0 0 18px 18px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px solid rgba(255,255,255,0.4);
+}
+
+.total-cursive {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 32px;
+  color: #4a1a3a;
+}
+
+.total-amount {
+  font-size: 22px;
+  font-weight: 800;
+  color: #4a1a3a;
+}
+
+/* Back button */
+.btn-back-home {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  padding: 14px;
+  background: rgba(255,255,255,0.45);
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #5a2d4a;
+  text-decoration: none;
+  transition: background 0.12s;
+}
+
+.btn-back-home:active {
+  background: rgba(255,255,255,0.65);
+}
+
+.container {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Header ── */
+.main-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 2px;
+}
+
+.header-icon {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #7B1F52;
+  letter-spacing: -0.3px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #B05080;
+  text-align: center;
+  margin-top: -8px;
+}
+
+/* ── Plant display card ── */
+.stage-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 20px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(180,80,120,0.08);
+}
+
+.plant {
+  font-size: 80px;
+  line-height: 1;
+  display: block;
+  transition: transform 0.3s;
+}
+
+.grow { animation: pop 0.4s ease; }
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.25) rotate(-5deg); }
+  70%  { transform: scale(1.1) rotate(3deg); }
+  100% { transform: scale(1); }
+}
+
+.stage-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #c0447a;
+  margin-top: 12px;
+}
+
+/* Floating emojis */
+.floater {
+  position: absolute;
+  font-size: 18px;
+  animation: floatUp 1.2s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-70px); }
+}
+
+/* ── Year progress ── */
+.year-emojis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  padding: 0 4px;
+  margin-bottom: 6px;
+}
+
+.year-track {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.year-dot {
+  flex: 1;
+  height: 10px;
+  border-radius: 10px;
+  background: #F4C8DE;
+  transition: background 0.4s;
+}
+
+.year-dot.done    { background: #6BCB77; }
+.year-dot.current { background: #FF9ED1; }
+
+.year-label {
+  font-size: 12px;
+  color: #B05080;
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* ── Start Year input ── */
+.start-year-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px 16px;
+  box-shadow: 0 2px 8px rgba(180,80,120,0.08);
+}
+
+.start-year-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #b05080;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.start-year-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: #7B1F52;
+  background: transparent;
+  text-align: right;
+}
+
+/* ── Year selector ── */
+.year-select-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7B1F52;
+  text-align: center;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.year-pills {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.year-pill {
+  flex: 1;
+  min-width: calc(33% - 6px);
+  padding: 10px 0;
+  border-radius: 30px;
+  border: 2px solid #F4ACCA;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  color: #c0447a;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.year-pill.active {
+  background: #FF9ED1;
+  color: #fff;
+  border-color: #FF9ED1;
+}
+
+.year-pill:active {
+  opacity: 0.85;
+  transform: scale(0.96);
+}
+
+/* ── SAVE button (main page) ── */
+.btn-save {
+  display: block;
+  width: 100%;
+  padding: 22px 0;
+  background: #F4ACCA;
+  border-radius: 20px;
+  text-align: center;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 36px;
+  color: #7B1F52;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(180,80,120,0.18);
+  transition: transform 0.12s, opacity 0.12s;
+  letter-spacing: 1px;
+}
+
+.btn-save:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* ── Totals card ── */
+.totals {
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 12px rgba(180,80,120,0.08);
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 6px 0;
+  color: #555;
+  align-items: center;
+}
+
+.total-row.big {
+  font-size: 18px;
+  font-weight: 800;
+  color: #c0447a;
+  border-top: 1.5px dashed #f4b8d8;
+  margin-top: 8px;
+  padding-top: 12px;
+}
+
+/* ══════════════════════════════
+   SAVINGS PAGE
+══════════════════════════════ */
+
+.savings-page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.back-btn {
+  background: #fff;
+  border: none;
+  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  color: #c0447a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(180,80,120,0.12);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.savings-page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #7B1F52;
+}
+
+/* Inputs */
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #b05080;
+  margin-bottom: 4px;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 14px;
+  border: 1.5px solid #f4b8d8;
+  background: #fff;
+  font-size: 15px;
+  outline: none;
+  color: #333;
+}
+
+input[type="number"]:focus {
+  border-color: #FF9ED1;
+}
+
+/* Monthly savings tap button */
+.monthly-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b05080;
+  margin-bottom: 4px;
+}
+
+.btn-add-savings {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 14px;
+  border-radius: 14px;
+  border: 1.5px dashed #f4b8d8;
+  background: #fff;
+  font-size: 14px;
+  color: #b05080;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.btn-add-savings:active {
+  background: #fff0f8;
+  transform: scale(0.98);
+}
+
+.edit-icon { font-size: 14px; }
+
+/* Grow / Reset buttons */
+.btn-row {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  border: none;
+  border-radius: 30px;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  flex: 1;
+  transition: transform 0.1s, opacity 0.1s;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+button:active { transform: scale(0.97); }
+
+.btn-main {
+  background: #FF9ED1;
+  color: #fff;
+}
+
+.btn-reset {
+  background: #ffe0f0;
+  color: #c0447a;
+  flex: 0 0 auto;
+  padding: 13px 18px;
+}
+
+/* ══════════════════════════════
+   MODAL
+══════════════════════════════ */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 100;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px 40px;
+  width: 100%;
+  max-width: 420px;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #c0447a;
+}
+
+.modal-close {
+  background: #ffe0f0;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  color: #c0447a;
+  cursor: pointer;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.modal-sub {
+  font-size: 12px;
+  color: #b05080;
+  margin-bottom: 16px;
+}
+
+.modal-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #fff5fb;
+  border: 2px solid #FF9ED1;
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+
+.modal-currency {
+  font-size: 22px;
+  font-weight: 700;
+  color: #c0447a;
+  margin-right: 6px;
+}
+
+.modal-input {
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  font-weight: 700;
+  color: #333;
+  flex: 1;
+  outline: none;
+  width: 100%;
+  padding: 0;
+  border-radius: 0;
+}
+
+.modal-quick {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.quick-btn {
+  flex: 1 1 calc(50% - 4px);
+  padding: 10px 0;
+  border-radius: 12px;
+  border: 1.5px solid #f4b8d8;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c0447a;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.quick-btn:active { background: #ffe0f0; }
+
+.modal-confirm {
+  width: 100%;
+  padding: 15px;
+  border-radius: 30px;
+  border: none;
+  background: #FF9ED1;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.1s;
+  flex: none;
+}
+
+.modal-confirm:active { opacity: 0.85; }
+
+/* ══════════════════════════════
+   YEAR SAVINGS MODAL
+══════════════════════════════ */
+
+.savings-modal-box {
+  background: #F0C8E0;
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px 40px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 88vh;
+  overflow-y: auto;
+  animation: slideUp 0.25s ease;
+}
+
+.savings-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.savings-modal-year-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #5a2d4a;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+}
+
+/* Month amount modal sits above the year savings modal */
+.month-amount-overlay {
+  z-index: 200;
+}
+
+/* ══════════════════════════════
+   PER-YEAR BREAKDOWN CARD
+══════════════════════════════ */
+
+.year-breakdown-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 12px rgba(180,80,120,0.08);
+}
+
+.year-breakdown-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #b05080;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.breakdown-empty {
+  font-size: 13px;
+  color: #cca0b8;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.year-card {
+  border-bottom: 1.5px dashed #f4d0e4;
+  padding: 10px 0;
+}
+
+.year-card:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.year-card-header {
+  font-size: 13px;
+  font-weight: 800;
+  color: #7B1F52;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.year-card-rate {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: #FF9ED1;
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+.year-card-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #666;
+  padding: 2px 0;
+}
+
+.year-card-row.accent {
+  color: #c0447a;
+  font-weight: 600;
+}
+
+/* ── Clear All button ── */
+.btn-clear-all {
+  width: 100%;
+  padding: 11px;
+  border-radius: 14px;
+  border: 1.5px solid #f4b8d8;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c0447a;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.btn-clear-all:active {
+  background: #ffe0f0;
+}
+
+/* ── Extra totals rows ── */
+.total-row.highlight {
+  font-size: 18px;
+  font-weight: 800;
+  color: #7B1F52;
+  border-top: 1.5px dashed #f4b8d8;
+  margin-top: 8px;
+  padding-top: 12px;
+}

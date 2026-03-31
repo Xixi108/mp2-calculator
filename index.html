@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MP2 Flower Savings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="main-header">
+    <span class="header-icon">🌸</span>
+    <h2>Grow Your Savings</h2>
+  </div>
+  <p class="subtitle">Watch your money bloom into a sunflower 🌻</p>
+
+  <!-- Plant display card -->
+  <div class="stage-box" id="stageBox">
+    <span class="plant" id="plant">🌱</span>
+    <div class="stage-label" id="stageLabel">Seed — just getting started!</div>
+  </div>
+
+  <!-- Year Started input -->
+  <div class="start-year-wrap">
+    <span class="start-year-label">Year Started</span>
+    <input id="startYearInput" class="start-year-input" type="number" placeholder="e.g. 2024" min="2000" max="2100" oninput="onStartYearInput()">
+  </div>
+
+  <!-- Year progress track -->
+  <div class="year-emojis">
+    <span>🌱</span><span>🌿</span><span>🌷</span><span>🌸</span><span>🌻</span><span>🌟</span>
+  </div>
+  <div class="year-track">
+    <div class="year-dot current" id="dot0"></div>
+    <div class="year-dot" id="dot1"></div>
+    <div class="year-dot" id="dot2"></div>
+    <div class="year-dot" id="dot3"></div>
+    <div class="year-dot" id="dot4"></div>
+    <div class="year-dot" id="dot5"></div>
+  </div>
+  <div class="year-label" id="yearLabel">Year 0 of 6</div>
+
+  <!-- Year selector -->
+  <div class="year-select-label">Select Year</div>
+  <div class="year-pills">
+    <button class="year-pill active" onclick="openYearModal(1)" id="pill1">Year 1</button>
+    <button class="year-pill" onclick="openYearModal(2)" id="pill2">Year 2</button>
+    <button class="year-pill" onclick="openYearModal(3)" id="pill3">Year 3</button>
+    <button class="year-pill" onclick="openYearModal(4)" id="pill4">Year 4</button>
+    <button class="year-pill" onclick="openYearModal(5)" id="pill5">Year 5</button>
+    <button class="year-pill" onclick="openYearModal(6)" id="pill6">Year 6</button>
+  </div>
+
+  <!-- Clear All button -->
+  <button class="btn-clear-all" onclick="clearAll()">Clear All</button>
+
+  <!-- Per-year breakdown card -->
+  <div class="year-breakdown-card" id="yearBreakdownCard">
+    <div class="year-breakdown-title">Per Year Breakdown</div>
+    <div id="yearBreakdown"><div class="breakdown-empty">No savings yet — tap a year to start</div></div>
+  </div>
+
+  <!-- Summary totals card -->
+  <div class="totals" id="totals">
+    <div class="total-row">
+      <span>💰 Savings (Total)</span>
+      <span id="tDeposit">₱0</span>
+    </div>
+    <div class="total-row">
+      <span>🌧️ Dividend Earned (Annual)</span>
+      <span id="tDividendAnnual">₱0</span>
+    </div>
+    <div class="total-row">
+      <span>📈 Dividend Earned (Compounded)</span>
+      <span id="tDividendCompounded">₱0</span>
+    </div>
+    <div class="total-row big">
+      <span>🌱 Total Value (Annual)</span>
+      <span id="tTotalAnnual">₱0</span>
+    </div>
+    <div class="total-row big highlight">
+      <span>🌻 Total Value (Compounded)</span>
+      <span id="tTotalCompounded">₱0</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Year Savings Modal -->
+<div class="modal-overlay" id="yearModalOverlay" onclick="closeYearModalOutside(event)">
+  <div class="savings-modal-box">
+    <div class="savings-modal-header">
+      <span class="savings-modal-year-title" id="yearModalTitle">Year 1 Savings</span>
+      <button class="modal-close" onclick="closeYearModal()">✕</button>
+    </div>
+
+    <div class="input-table">
+      <!-- Rate row -->
+      <div class="table-row rate-row" style="border-bottom:none; border-radius:18px 18px 0 0;">
+        <div class="row-label cursive-label pct-label">%</div>
+        <div class="row-value">
+          <input id="modalRate" class="table-input" type="number" placeholder="e.g. 7.03" min="0" step="0.01" oninput="saveModalRate()">
+        </div>
+      </div>
+      <!-- Month rows -->
+      <div class="months-block">
+        <div class="months-col" id="savingsModalMonths"></div>
+      </div>
+    </div>
+
+    <!-- Total -->
+    <div class="total-section">
+      <span class="total-cursive">Total</span>
+      <span class="total-amount" id="savingsModalTotal">₱0</span>
+    </div>
+
+    <button class="modal-confirm" style="margin-top:16px;" onclick="closeYearModal()">Done ✓</button>
+  </div>
+</div>
+
+<!-- Month Amount Modal (nested inside year modal) -->
+<div class="modal-overlay month-amount-overlay" id="monthAmountOverlay" onclick="closeMonthModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="monthModalTitle">💰 JAN</span>
+      <button class="modal-close" onclick="closeMonthModal()">✕</button>
+    </div>
+    <p class="modal-sub">Enter your savings for this month</p>
+    <div class="modal-input-wrap">
+      <span class="modal-currency">₱</span>
+      <input id="monthModalAmount" class="modal-input" type="number" placeholder="0" min="0" inputmode="numeric">
+    </div>
+    <div class="modal-quick">
+      <button class="quick-btn" onclick="setMonthAmount(500)">₱500</button>
+      <button class="quick-btn" onclick="setMonthAmount(1000)">₱1,000</button>
+      <button class="quick-btn" onclick="setMonthAmount(2000)">₱2,000</button>
+      <button class="quick-btn" onclick="setMonthAmount(5000)">₱5,000</button>
+    </div>
+    <button class="modal-confirm" onclick="confirmMonthAmount()">Confirm ✓</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
