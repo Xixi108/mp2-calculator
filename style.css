@@ -1,12 +1,25 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── Global mobile base ── */
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-family: 'Segoe UI', sans-serif;
   background: #FFD6E8;
   display: flex;
   justify-content: center;
-  padding: 36px 20px 40px;
+  padding: 36px 16px calc(40px + env(safe-area-inset-bottom));
   min-height: 100vh;
+  overscroll-behavior-y: none;
+}
+
+/* Faster tap response on all interactive elements */
+button, a, .month-row, .year-pill {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ══════════════════════════════
@@ -75,7 +88,7 @@ body.savings-bg {
   border: none;
   border-radius: 10px;
   padding: 10px 14px;
-  font-size: 15px;
+  font-size: 16px;
   color: #4a1a3a;
   outline: none;
   font-family: 'Segoe UI', sans-serif;
@@ -134,7 +147,7 @@ body.savings-bg {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  min-height: 50px;
+  min-height: 54px;
 }
 
 /* Total section */
@@ -318,7 +331,7 @@ h2 {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: #7B1F52;
   background: transparent;
@@ -465,7 +478,7 @@ input[type="number"] {
   border-radius: 14px;
   border: 1.5px solid #f4b8d8;
   background: #fff;
-  font-size: 15px;
+  font-size: 16px;
   outline: none;
   color: #333;
 }
@@ -558,7 +571,7 @@ button:active { transform: scale(0.97); }
 .modal-box {
   background: #fff;
   border-radius: 24px 24px 0 0;
-  padding: 24px 20px 40px;
+  padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
   width: 100%;
   max-width: 420px;
   animation: slideUp 0.25s ease;
@@ -643,11 +656,12 @@ button:active { transform: scale(0.97); }
 
 .quick-btn {
   flex: 1 1 calc(50% - 4px);
-  padding: 10px 0;
+  padding: 14px 0;
+  min-height: 48px;
   border-radius: 12px;
   border: 1.5px solid #f4b8d8;
   background: #fff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: #c0447a;
   cursor: pointer;
@@ -679,11 +693,12 @@ button:active { transform: scale(0.97); }
 .savings-modal-box {
   background: #F0C8E0;
   border-radius: 24px 24px 0 0;
-  padding: 20px 20px 40px;
+  padding: 20px 20px calc(40px + env(safe-area-inset-bottom));
   width: 100%;
   max-width: 420px;
-  max-height: 88vh;
+  max-height: 90vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   animation: slideUp 0.25s ease;
 }
 
@@ -802,4 +817,46 @@ button:active { transform: scale(0.97); }
   border-top: 1.5px dashed #f4b8d8;
   margin-top: 8px;
   padding-top: 12px;
+}
+
+/* ══════════════════════════════
+   SMALL SCREEN (≤ 360px — iPhone SE etc.)
+══════════════════════════════ */
+@media (max-width: 360px) {
+  body {
+    padding: 20px 12px calc(32px + env(safe-area-inset-bottom));
+  }
+
+  .container {
+    gap: 12px;
+  }
+
+  h2 { font-size: 22px; }
+
+  .plant { font-size: 64px; }
+
+  .year-emojis { font-size: 16px; }
+
+  .year-pill {
+    font-size: 11px;
+    padding: 10px 2px;
+  }
+
+  .month-label {
+    width: 90px;
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  .month-value {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .total-row { font-size: 13px; }
+  .total-row.big, .total-row.highlight { font-size: 15px; }
+
+  .modal-input { font-size: 22px; }
+
+  .savings-modal-year-title { font-size: 17px; }
 }
