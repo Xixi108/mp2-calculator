@@ -793,16 +793,20 @@ button:active { transform: scale(0.97); }
 
 /* ── Clear All button ── */
 .btn-clear-all {
-  width: 100%;
-  padding: 11px;
-  border-radius: 14px;
+  display: block;
+  width: auto;
+  align-self: flex-end;
+  margin-left: auto;
+  padding: 7px 16px;
+  border-radius: 20px;
   border: 1.5px solid #f4b8d8;
   background: #fff;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #c0447a;
   cursor: pointer;
   transition: background 0.12s;
+  flex: none;
 }
 
 .btn-clear-all:active {
