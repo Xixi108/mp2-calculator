@@ -176,9 +176,19 @@ function updateModalTotal() {
   document.getElementById('savingsModalTotal').textContent = '₱' + total.toLocaleString();
 }
 
-// ── Compute totals from all saved month data across all 5 years ──
+// ── Compute totals from all saved month data across all 6 years ──
+//
+// Two modes:
+//   ANNUAL (payout):    Dividends are paid out each year. Principal = cumulative deposits only.
+//                       Prior deposits earn full year (factor=1). New deposits earn weighted.
+//                       → prior-year ₱1,000 still earns ₱70 in Year 2 at 7%.
+//
+//   COMPOUNDED:         Dividends are reinvested. Balance = deposits + all prior dividends.
+//                       Prior balance (including reinvested dividends) earns full year.
+//                       → ₱1,070 balance earns ₱74.90 in Year 2 at 7%.
 function computeFromMonths() {
-  let compoundedBalance = 0;
+  let compoundedBalance = 0;   // grows with reinvested dividends
+  let cumulativeDeposits = 0;  // raw deposits only, never includes dividends
   let totalDeposited = 0;
   let totalAnnualDividends = 0;
   const yearBreakdown = [];
@@ -191,30 +201,29 @@ function computeFromMonths() {
       yearDeposited += Number(localStorage.getItem('sav_y' + y + '_' + m)) || 0;
     });
 
-    // Skip only if there is truly nothing: no deposits yet AND no prior balance to earn on
-    if (yearDeposited === 0 && (compoundedBalance === 0 || rate === 0)) continue;
+    // Skip if nothing to compute: no prior deposits AND no new deposits, OR no rate
+    if (yearDeposited === 0 && (cumulativeDeposits === 0 || rate === 0)) continue;
 
-    // Annual dividend: only NEW deposits for this year × weighted factor × rate
-    // (no carry-over — this is the payout mode where dividends are taken out each year)
-    let weightedContribution = 0;
+    // Weighted new deposits for this year: Jan=12/12, Feb=11/12, ... Dec=1/12
+    let weightedNew = 0;
     MONTHS_LIST.forEach((month, idx) => {
       const deposit = Number(localStorage.getItem('sav_y' + y + '_' + month)) || 0;
-      const weight = (13 - (idx + 1)) / 12;
-      weightedContribution += deposit * weight;
+      weightedNew += deposit * ((13 - (idx + 1)) / 12);
     });
-    const annualDividend = weightedContribution * (rate / 100);
 
-    // Compounded dividend:
-    // Previous accumulated balance (deposits + all prior dividends) earns a full year,
-    // PLUS new deposits earn their weighted factor. Dividend is added back to principal.
-    const prevBalance = compoundedBalance;
-    const compoundedDividend = (prevBalance + weightedContribution) * (rate / 100);
-    compoundedBalance = prevBalance + yearDeposited + compoundedDividend;
+    // ANNUAL: prior deposits earn full year + new deposits earn weighted factor
+    // Dividends are paid out → base is always cumulative deposits (never grows from dividends)
+    const annualDividend = (cumulativeDeposits + weightedNew) * (rate / 100);
 
-    totalDeposited += yearDeposited;
+    // COMPOUNDED: prior balance (deposits + reinvested dividends) earns full year
+    //             + new deposits earn weighted factor. Dividend added back to balance.
+    const compoundedDividend = (compoundedBalance + weightedNew) * (rate / 100);
+
+    cumulativeDeposits  += yearDeposited;
+    compoundedBalance   += yearDeposited + compoundedDividend;
+    totalDeposited      += yearDeposited;
     totalAnnualDividends += annualDividend;
 
-    // Show in breakdown if this year has deposits OR earned compounded dividends on prior balance
     if (yearDeposited > 0 || compoundedDividend > 0) {
       yearBreakdown.push({ year: y, deposited: yearDeposited, annualDividend, compoundedDividend, rate });
     }
