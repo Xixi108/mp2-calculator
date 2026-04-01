@@ -198,7 +198,12 @@ body.savings-bg {
   max-width: 380px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 16px;
+}
+
+.container > * {
+  width: 100%;
 }
 
 /* ── Header ── */
@@ -793,19 +798,17 @@ button:active { transform: scale(0.97); }
 
 /* ── Clear All button ── */
 .btn-clear-all {
-  display: block;
-  width: auto;
-  align-self: flex-end;
-  margin-left: auto;
-  padding: 7px 16px;
-  border-radius: 20px;
+  width: 100%;
+  padding: 13px;
+  border-radius: 14px;
   border: 1.5px solid #f4b8d8;
   background: #fff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #c0447a;
   cursor: pointer;
   transition: background 0.12s;
+  text-align: center;
   flex: none;
 }
 
