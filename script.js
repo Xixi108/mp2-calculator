@@ -191,12 +191,11 @@ function computeFromMonths() {
       yearDeposited += Number(localStorage.getItem('sav_y' + y + '_' + m)) || 0;
     });
 
-    if (yearDeposited === 0) continue;
+    // Skip only if there is truly nothing: no deposits yet AND no prior balance to earn on
+    if (yearDeposited === 0 && (compoundedBalance === 0 || rate === 0)) continue;
 
-    // Annual dividend using weighted factor formula:
-    // dividend = Σ(deposit_m × (13 - m) / 12) × rate
-    // Jan (m=1) = 12/12, Feb (m=2) = 11/12, ... Dec (m=12) = 1/12
-    // Only new deposits for this year (no carry-over from prior years).
+    // Annual dividend: only NEW deposits for this year × weighted factor × rate
+    // (no carry-over — this is the payout mode where dividends are taken out each year)
     let weightedContribution = 0;
     MONTHS_LIST.forEach((month, idx) => {
       const deposit = Number(localStorage.getItem('sav_y' + y + '_' + month)) || 0;
@@ -206,15 +205,19 @@ function computeFromMonths() {
     const annualDividend = weightedContribution * (rate / 100);
 
     // Compounded dividend:
-    // Previous balance earns a full year (factor = 1) + new deposits earn weighted factor.
-    // At year-end the dividend is added to principal and earns dividends next year.
+    // Previous accumulated balance (deposits + all prior dividends) earns a full year,
+    // PLUS new deposits earn their weighted factor. Dividend is added back to principal.
     const prevBalance = compoundedBalance;
     const compoundedDividend = (prevBalance + weightedContribution) * (rate / 100);
     compoundedBalance = prevBalance + yearDeposited + compoundedDividend;
 
     totalDeposited += yearDeposited;
     totalAnnualDividends += annualDividend;
-    yearBreakdown.push({ year: y, deposited: yearDeposited, annualDividend, compoundedDividend, rate });
+
+    // Show in breakdown if this year has deposits OR earned compounded dividends on prior balance
+    if (yearDeposited > 0 || compoundedDividend > 0) {
+      yearBreakdown.push({ year: y, deposited: yearDeposited, annualDividend, compoundedDividend, rate });
+    }
   }
 
   const totalCompoundedDividends = compoundedBalance - totalDeposited;
@@ -226,7 +229,7 @@ function computeFromMonths() {
     totalAnnualValue: totalDeposited + totalAnnualDividends,
     totalCompoundedValue: compoundedBalance,
     yearBreakdown,
-    year: yearBreakdown.length,
+    year: yearBreakdown.filter(yb => yb.deposited > 0).length,
   };
 }
 
@@ -248,14 +251,21 @@ function refreshFrontPage() {
     if (s.yearBreakdown.length === 0) {
       breakdown.innerHTML = '<div class="breakdown-empty">No savings yet — tap a year to start</div>';
     } else {
-      breakdown.innerHTML = s.yearBreakdown.map(yb => `
-        <div class="year-card">
-          <div class="year-card-header">Year ${yb.year} <span class="year-card-rate">${yb.rate > 0 ? yb.rate + '%' : 'no rate'}</span></div>
-          <div class="year-card-row"><span>Deposited</span><span>${fmt(yb.deposited)}</span></div>
-          <div class="year-card-row"><span>Dividend (Annual)</span><span>${fmt(yb.annualDividend)}</span></div>
-          <div class="year-card-row accent"><span>Dividend (Compounded)</span><span>${fmt(yb.compoundedDividend)}</span></div>
-        </div>
-      `).join('');
+      breakdown.innerHTML = s.yearBreakdown.map(yb => {
+        const cal = calendarYear(yb.year);
+        const label = cal ? `Year ${yb.year} (${cal})` : `Year ${yb.year}`;
+        const depositRow = yb.deposited > 0
+          ? `<div class="year-card-row"><span>Deposited</span><span>${fmt(yb.deposited)}</span></div>`
+          : `<div class="year-card-row"><span>Deposited</span><span style="color:#cca0b8">—</span></div>`;
+        return `
+          <div class="year-card">
+            <div class="year-card-header">${label} <span class="year-card-rate">${yb.rate > 0 ? yb.rate + '%' : 'no rate'}</span></div>
+            ${depositRow}
+            <div class="year-card-row"><span>Dividend (Annual)</span><span>${fmt(yb.annualDividend)}</span></div>
+            <div class="year-card-row accent"><span>Dividend (Compounded)</span><span>${fmt(yb.compoundedDividend)}</span></div>
+          </div>
+        `;
+      }).join('');
     }
   }
 
